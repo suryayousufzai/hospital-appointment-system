@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}Appointments — MediCare{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2><i class="bi bi-calendar-check me-2 text-primary"></i>Appointments</h2>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb"><li class="breadcrumb-item active">Appointments</li></ol>
+    </nav>
+  </div>
+  {% if current_user.is_patient() %}
+  <a href="{{ url_for('appointment.book') }}" class="btn btn-primary">
+    <i class="bi bi-calendar-plus me-2"></i>Book New
+  </a>
+  {% endif %}
+</div>
+
+<!-- Status Filter Tabs -->
+<div class="card mb-4">
+  <div class="card-body py-2">
+    <div class="d-flex gap-2 flex-wrap align-items-center">
+      <a href="{{ url_for('appointment.list_appointments') }}"
+         class="btn btn-sm {% if not status_filter %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+        All
+      </a>
+      {% for s in ALL_STATUSES %}
+      <a href="{{ url_for('appointment.list_appointments', status=s) }}"
+         class="btn btn-sm {% if status_filter == s %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+        {{ s | capitalize }}
+      </a>
+      {% endfor %}
+
+      <div class="ms-auto search-box" style="max-width:280px;">
+        <i class="bi bi-search"></i>
+        <input type="text" id="liveSearch" class="form-control form-control-sm"
+               placeholder="Search appointments…">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Appointments Table -->
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span><i class="bi bi-table me-2"></i>
+      {% if status_filter %}{{ status_filter | capitalize }}{% else %}All{% endif %} Appointments
+    </span>
+    <span class="badge bg-primary">{{ appointments | length }}</span>
+  </div>
+  <div class="card-body p-0">
+    {% if appointments %}
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            {% if current_user.is_admin() or current_user.is_doctor() %}
+            <th>Patient</th>
+            {% endif %}
+            {% if current_user.is_admin() or current_user.is_patient() %}
+            <th>Doctor</th>
+            {% endif %}
+            <th>Date</th>
+            <th>Time</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for appt in appointments %}
+          <tr data-search="{{ appt.patient.user.full_name }} {{ appt.doctor.user.full_name }} {{ appt.appointment_date }} {{ appt.status }}">
+            <td class="text-muted small">{{ appt.id }}</td>
+
+            {% if current_user.is_admin() or current_user.is_doctor() %}
+            <td>
+              <a href="{{ url_for('patient.view_patient', patient_id=appt.patient.id) }}"
+                 class="fw-semibold text-decoration-none">
+                {{ appt.patient.user.full_name }}
+              </a>
+            </td>
+            {% endif %}
+
+            {% if current_user.is_admin() or current_user.is_patient() %}
+            <td>
+              <div class="fw-semibold small">Dr. {{ appt.doctor.user.full_name }}</div>
+              <div class="text-muted" style="font-size:.75rem;">{{ appt.doctor.specialty }}</div>
+            </td>
+            {% endif %}
+
+            <td class="small">{{ appt.appointment_date.strftime('%b %d, %Y') }}</td>
+            <td><span class="badge bg-primary">{{ appt.appointment_time }}</span></td>
+            <td class="text-muted small">{{ (appt.reason or '—')[:35] }}{% if appt.reason and appt.reason|length > 35 %}…{% endif %}</td>
+            <td>
+              <span class="badge status-{{ appt.status }}">
+                {{ appt.status | capitalize }}
+              </span>
+            </td>
+            <td>
+              <div class="d-flex gap-1">
+                <a href="{{ url_for('appointment.view_appointment', appointment_id=appt.id) }}"
+                   class="btn btn-sm btn-outline-primary" data-bs-toggle="tooltip" title="View">
+                  <i class="bi bi-eye"></i>
+                </a>
+                {% if appt.status not in ['completed', 'cancelled'] %}
+                <form method="POST"
+                      action="{{ url_for('appointment.cancel_appointment', appointment_id=appt.id) }}"
+                      class="d-inline">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button type="submit" class="btn btn-sm btn-outline-danger"
+                          data-confirm="Cancel this appointment?"
+                          data-bs-toggle="tooltip" title="Cancel">
+                    <i class="bi bi-x-lg"></i>
+                  </button>
+                </form>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+          <tr id="emptyRow" style="display:none;">
+            <td colspan="8" class="text-center text-muted py-4">No results match your search.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state py-5">
+      <i class="bi bi-calendar-x" style="font-size:3rem;color:var(--text-muted);"></i>
+      <h5 class="text-muted mt-3">No appointments found</h5>
+      {% if current_user.is_patient() %}
+      <p class="text-muted">You haven't booked any appointments yet.</p>
+      <a href="{{ url_for('appointment.book') }}" class="btn btn-primary mt-2">
+        <i class="bi bi-calendar-plus me-2"></i>Book Your First Appointment
+      </a>
+      {% else %}
+      <p class="text-muted">No appointments match the selected filter.</p>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

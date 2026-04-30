@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Departments — MediCare{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2><i class="bi bi-building me-2 text-primary"></i>Departments</h2>
+    <nav aria-label="breadcrumb"><ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+      <li class="breadcrumb-item active">Departments</li>
+    </ol></nav>
+  </div>
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDeptModal">
+    <i class="bi bi-plus-lg me-2"></i>Add Department
+  </button>
+</div>
+
+<div class="row g-3">
+  {% for dept in departments %}
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h5 class="mb-1">{{ dept.name }}</h5>
+            <p class="text-muted small mb-2">{{ dept.description or 'No description.' }}</p>
+            <span class="badge bg-primary-subtle text-primary">
+              {{ dept.doctors|length }} doctor{{ 's' if dept.doctors|length != 1 }}
+            </span>
+          </div>
+          <div class="stat-icon" style="background:var(--primary-light);color:var(--primary);width:42px;height:42px;border-radius:10px;">
+            <i class="bi bi-building"></i>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer bg-transparent d-flex justify-content-between align-items-center">
+        <a href="{{ url_for('doctor.list_doctors') }}?dept={{ dept.id }}" class="btn btn-sm btn-outline-primary">
+          <i class="bi bi-person-badge me-1"></i>View Doctors
+        </a>
+        {% if not dept.doctors %}
+        <form method="POST" action="{{ url_for('admin.delete_department', dept_id=dept.id) }}" class="d-inline">
+          <button class="btn btn-sm btn-outline-danger" data-confirm="Delete {{ dept.name }}?">
+            <i class="bi bi-trash"></i>
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="col-12">
+    <div class="card"><div class="empty-state"><i class="bi bi-building"></i><p>No departments yet. Add one above.</p></div></div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Add Department Modal -->
+<div class="modal fade" id="addDeptModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius:16px;">
+      <div class="modal-header border-0 pb-0">
+        <h5 class="modal-title">Add Department</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ url_for('admin.add_department') }}">
+        {{ form.hidden_tag() }}
+        <div class="modal-body">
+          <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control", placeholder="e.g. Cardiology") }}
+          </div>
+          <div class="mb-3">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control", rows=3, placeholder="Short description…") }}
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+          {{ form.submit(class="btn btn-primary") }}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

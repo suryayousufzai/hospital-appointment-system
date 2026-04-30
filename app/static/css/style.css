@@ -1,0 +1,369 @@
+/* ============================================================
+   MediCare Hospital — Global Stylesheet
+   ============================================================ */
+
+/* ── CSS Variables ─────────────────────────────────────────── */
+:root {
+  --primary:       #1a6b8a;
+  --primary-dark:  #134f67;
+  --primary-light: #e8f4f8;
+  --accent:        #00b4d8;
+  --success:       #2d8653;
+  --warning:       #d4841a;
+  --danger:        #c0392b;
+  --bg:            #f0f4f8;
+  --surface:       #ffffff;
+  --border:        #dce3ea;
+  --text:          #1c2b36;
+  --text-muted:    #6b7f8e;
+  --sidebar-w:     260px;
+  --nav-h:         64px;
+  --radius:        12px;
+  --shadow:        0 2px 12px rgba(0,0,0,.08);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,.12);
+}
+
+/* ── Reset & Base ───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'DM Serif Display', serif;
+  color: var(--text);
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:hover { color: var(--primary-dark); }
+
+/* ── Navbar ─────────────────────────────────────────────────── */
+#mainNav {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+  height: var(--nav-h);
+  box-shadow: 0 2px 16px rgba(26,107,138,.3);
+  z-index: 1030;
+}
+
+.brand-icon {
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,.2);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; color: #fff;
+}
+
+.brand-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.3rem;
+  color: #fff;
+  letter-spacing: .5px;
+}
+.brand-name span { color: var(--accent); }
+
+#mainNav .nav-link {
+  color: rgba(255,255,255,.8) !important;
+  border-radius: 8px;
+  padding: .45rem .85rem;
+  font-size: .88rem;
+  font-weight: 500;
+  transition: all .2s;
+}
+#mainNav .nav-link:hover,
+#mainNav .nav-link.active {
+  background: rgba(255,255,255,.18);
+  color: #fff !important;
+}
+
+/* Role badges in navbar */
+.badge-role {
+  font-size: .75rem;
+  font-weight: 600;
+  padding: .3rem .7rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.badge-role-admin   { background: rgba(255,255,255,.15); color: #ffd166; }
+.badge-role-doctor  { background: rgba(255,255,255,.15); color: #90e0ef; }
+.badge-role-patient { background: rgba(255,255,255,.15); color: #b7e4c7; }
+
+/* Avatar initials */
+.avatar-sm {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.25);
+  color: #fff;
+  font-size: .75rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  text-transform: uppercase;
+}
+
+.avatar-lg {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 1.3rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  text-transform: uppercase;
+}
+
+/* ── Main content area ──────────────────────────────────────── */
+.main-content {
+  flex: 1;
+  padding: 2rem 1.5rem;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.app-footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 1rem 0;
+  font-size: .82rem;
+  color: var(--text-muted);
+}
+
+/* ── Cards ──────────────────────────────────────────────────── */
+.card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  background: var(--surface);
+}
+
+.card-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) 0 0 !important;
+  padding: 1.1rem 1.5rem;
+  font-weight: 600;
+}
+
+/* ── Stat cards (dashboard) ─────────────────────────────────── */
+.stat-card {
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  box-shadow: var(--shadow);
+  transition: transform .2s, box-shadow .2s;
+  border: none;
+}
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-icon {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.stat-card.blue   { background: linear-gradient(135deg, #1a6b8a, #00b4d8); color: #fff; }
+.stat-card.green  { background: linear-gradient(135deg, #2d8653, #52b788); color: #fff; }
+.stat-card.orange { background: linear-gradient(135deg, #d4841a, #f4a261); color: #fff; }
+.stat-card.purple { background: linear-gradient(135deg, #5c4d9e, #9b72cf); color: #fff; }
+
+.stat-card .stat-icon { background: rgba(255,255,255,.2); color: #fff; }
+.stat-card .stat-label { font-size: .82rem; opacity: .85; font-weight: 500; text-transform: uppercase; letter-spacing: .5px; }
+.stat-card .stat-value { font-size: 2rem; font-weight: 700; font-family: 'DM Serif Display', serif; line-height: 1.1; }
+
+/* ── Buttons ─────────────────────────────────────────────────── */
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: .88rem;
+  padding: .5rem 1.1rem;
+  transition: all .2s;
+}
+.btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.btn-primary:hover {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+.btn-outline-primary { color: var(--primary); border-color: var(--primary); }
+.btn-outline-primary:hover { background: var(--primary); color: #fff; }
+
+/* ── Forms ───────────────────────────────────────────────────── */
+.form-control, .form-select {
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  font-size: .9rem;
+  padding: .55rem .9rem;
+  transition: border-color .2s, box-shadow .2s;
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(26,107,138,.12);
+}
+.form-label { font-weight: 500; font-size: .88rem; margin-bottom: .4rem; }
+
+/* ── Tables ──────────────────────────────────────────────────── */
+.table { font-size: .88rem; }
+.table thead th {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: .75rem;
+  letter-spacing: .5px;
+  border-bottom: none;
+  padding: .85rem 1rem;
+}
+.table tbody td { vertical-align: middle; padding: .85rem 1rem; }
+.table-hover tbody tr:hover { background: var(--primary-light); }
+
+/* ── Badges ──────────────────────────────────────────────────── */
+.badge {
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: .75rem;
+  padding: .35rem .65rem;
+}
+
+/* Status badges */
+.status-pending   { background: #fff3cd; color: #856404; }
+.status-confirmed { background: #cfe2ff; color: #0a3678; }
+.status-completed { background: #d1e7dd; color: #0a3622; }
+.status-cancelled { background: #f8d7da; color: #58151c; }
+
+/* ── Page header ─────────────────────────────────────────────── */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.page-header h2 {
+  font-size: 1.6rem;
+  margin: 0;
+  color: var(--text);
+}
+.breadcrumb { font-size: .82rem; margin: 0; }
+.breadcrumb-item + .breadcrumb-item::before { color: var(--text-muted); }
+
+/* ── Auth / Landing pages ────────────────────────────────────── */
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--accent) 100%);
+  padding: 2rem;
+}
+
+.auth-card {
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 440px;
+}
+
+.auth-logo {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.8rem; color: #fff;
+  margin: 0 auto 1.2rem;
+}
+
+/* ── Alerts ──────────────────────────────────────────────────── */
+.alert {
+  border-radius: 10px;
+  border: none;
+  font-size: .88rem;
+}
+.alert-success { background: #d1e7dd; color: #0a3622; }
+.alert-danger  { background: #f8d7da; color: #58151c; }
+.alert-warning { background: #fff3cd; color: #664d03; }
+.alert-info    { background: #cff4fc; color: #055160; }
+
+/* ── Dropdown ────────────────────────────────────────────────── */
+.dropdown-menu {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  min-width: 200px;
+  padding: .5rem;
+}
+.dropdown-item {
+  border-radius: 8px;
+  font-size: .88rem;
+  padding: .55rem .9rem;
+}
+.dropdown-item:hover { background: var(--primary-light); }
+
+/* ── Search bar ──────────────────────────────────────────────── */
+.search-box {
+  position: relative;
+  max-width: 340px;
+  width: 100%;
+}
+.search-box input { padding-left: 2.6rem; }
+.search-box i {
+  position: absolute;
+  left: .9rem; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+/* ── Empty state ─────────────────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 3.5rem 2rem;
+  color: var(--text-muted);
+}
+.empty-state i { font-size: 3rem; margin-bottom: 1rem; display: block; }
+
+/* ── Pagination ──────────────────────────────────────────────── */
+.page-link { color: var(--primary); border-radius: 8px; margin: 0 2px; }
+.page-link:hover { background: var(--primary-light); color: var(--primary-dark); }
+.page-item.active .page-link { background: var(--primary); border-color: var(--primary); }
+
+/* ── Appointment timeline ────────────────────────────────────── */
+.timeline { position: relative; padding-left: 1.8rem; }
+.timeline::before {
+  content: '';
+  position: absolute; left: .5rem; top: 0; bottom: 0;
+  width: 2px; background: var(--border);
+}
+.timeline-item { position: relative; padding-bottom: 1.5rem; }
+.timeline-item::before {
+  content: '';
+  position: absolute; left: -1.3rem; top: .3rem;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--primary);
+  border: 2px solid var(--surface);
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .main-content { padding: 1.2rem 1rem; }
+  .stat-card .stat-value { font-size: 1.5rem; }
+  .page-header h2 { font-size: 1.3rem; }
+  .auth-card { padding: 1.8rem; }
+}

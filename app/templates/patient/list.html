@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Patients — MediCare{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2><i class="bi bi-heart-pulse me-2 text-primary"></i>Patients</h2>
+    <nav aria-label="breadcrumb"><ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+      <li class="breadcrumb-item active">Patients</li>
+    </ol></nav>
+  </div>
+</div>
+<div class="card mb-4">
+  <div class="card-body py-3">
+    <form method="GET" class="d-flex gap-2">
+      <div class="search-box flex-fill" style="max-width:100%;">
+        <i class="bi bi-search"></i>
+        <input type="text" name="q" class="form-control" placeholder="Search patients…" value="{{ q }}">
+      </div>
+      <button type="submit" class="btn btn-primary">Search</button>
+      <a href="{{ url_for('patient.list_patients') }}" class="btn btn-outline-secondary">Reset</a>
+    </form>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">{{ patients|length }} patient{{ 's' if patients|length != 1 }}</div>
+  <div class="card-body p-0">
+    {% if patients %}
+    <div class="table-responsive"><table class="table table-hover mb-0">
+      <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Age</th><th>Blood Type</th><th>Phone</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for patient in patients %}
+        <tr>
+          <td class="text-muted small">{{ patient.id }}</td>
+          <td>
+            <div class="d-flex align-items-center gap-2">
+              <div class="avatar-sm" style="width:30px;height:30px;font-size:.65rem;background:var(--primary-light);color:var(--primary);">
+                {{ patient.user.first_name[0] }}{{ patient.user.last_name[0] }}
+              </div>
+              {{ patient.user.full_name }}
+            </div>
+          </td>
+          <td>{{ patient.user.email }}</td>
+          <td>{{ patient.age or '—' }}</td>
+          <td>{{ patient.blood_type or '—' }}</td>
+          <td>{{ patient.phone or '—' }}</td>
+          <td>
+            <a href="{{ url_for('patient.view_patient', patient_id=patient.id) }}" class="btn btn-sm btn-outline-primary">
+              <i class="bi bi-eye"></i>
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}
+    <div class="empty-state"><i class="bi bi-heart-pulse"></i><p>No patients found.</p></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

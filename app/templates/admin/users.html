@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Manage Users — MediCare{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2><i class="bi bi-people me-2 text-primary"></i>Manage Users</h2>
+    <nav aria-label="breadcrumb"><ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+      <li class="breadcrumb-item active">Users</li>
+    </ol></nav>
+  </div>
+  <a href="{{ url_for('admin.add_doctor') }}" class="btn btn-primary">
+    <i class="bi bi-person-plus me-2"></i>Add Doctor
+  </a>
+</div>
+<div class="card mb-4">
+  <div class="card-body py-3">
+    <form method="GET" class="row g-2 align-items-center">
+      <div class="col-md-6">
+        <div class="search-box w-100" style="max-width:100%;">
+          <i class="bi bi-search"></i>
+          <input type="text" name="q" class="form-control" placeholder="Search name or email…" value="{{ q }}">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <select name="role" class="form-select">
+          <option value="">All Roles</option>
+          <option value="admin" {% if role=='admin' %}selected{% endif %}>Admin</option>
+          <option value="doctor" {% if role=='doctor' %}selected{% endif %}>Doctor</option>
+          <option value="patient" {% if role=='patient' %}selected{% endif %}>Patient</option>
+        </select>
+      </div>
+      <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary flex-fill">Filter</button>
+        <a href="{{ url_for('admin.manage_users') }}" class="btn btn-outline-secondary">Reset</a>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">{{ users|length }} user{{ 's' if users|length != 1 }} found</div>
+  <div class="card-body p-0">
+    {% if users %}
+    <div class="table-responsive">
+      <table class="table table-hover mb-0">
+        <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for user in users %}
+          <tr data-search="{{ user.full_name }} {{ user.email }}">
+            <td class="text-muted small">{{ user.id }}</td>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <div class="avatar-sm" style="width:32px;height:32px;font-size:.7rem;">{{ user.first_name[0] }}{{ user.last_name[0] }}</div>
+                {{ user.full_name }}
+              </div>
+            </td>
+            <td>{{ user.email }}</td>
+            <td><span class="badge {% if user.role=='admin' %}bg-warning text-dark{% elif user.role=='doctor' %}bg-info text-dark{% else %}bg-success{% endif %}">{{ user.role|capitalize }}</span></td>
+            <td><span class="badge {% if user.is_active %}bg-success{% else %}bg-danger{% endif %}">{{ 'Active' if user.is_active else 'Inactive' }}</span></td>
+            <td class="text-muted small">{{ user.created_at.strftime('%b %d, %Y') }}</td>
+            <td>
+              <div class="d-flex gap-1">
+                <a href="{{ url_for('admin.toggle_user', user_id=user.id) }}" class="btn btn-sm {% if user.is_active %}btn-outline-warning{% else %}btn-outline-success{% endif %}">
+                  <i class="bi bi-{% if user.is_active %}pause{% else %}play{% endif %}-fill"></i>
+                </a>
+                {% if user.id != 1 %}
+                <form method="POST" action="{{ url_for('admin.delete_user', user_id=user.id) }}" class="d-inline">
+                  <button class="btn btn-sm btn-outline-danger" data-confirm="Delete {{ user.full_name }}?"><i class="bi bi-trash"></i></button>
+                </form>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state"><i class="bi bi-people"></i><p>No users found.</p></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

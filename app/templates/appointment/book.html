@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block title %}Book Appointment — MediCare{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2><i class="bi bi-calendar-plus me-2 text-primary"></i>Book Appointment</h2>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('appointment.list_appointments') }}">Appointments</a>
+        </li>
+        <li class="breadcrumb-item active">Book New</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<div class="row g-4">
+
+  <!-- Booking Form -->
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header">
+        <i class="bi bi-calendar-event me-2 text-primary"></i>Appointment Details
+      </div>
+      <div class="card-body">
+        <form method="POST" novalidate>
+          {{ form.hidden_tag() }}
+
+          <!-- Doctor Selection -->
+          <div class="mb-4">
+            {{ form.doctor_id.label(class="form-label fw-semibold") }}
+            {{ form.doctor_id(class="form-select form-select-lg" + (" is-invalid" if form.doctor_id.errors else ""),
+               id="doctorSelect") }}
+            {% for e in form.doctor_id.errors %}
+              <div class="invalid-feedback">{{ e }}</div>
+            {% endfor %}
+          </div>
+
+          <!-- Date and Time in one row -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              {{ form.appointment_date.label(class="form-label fw-semibold") }}
+              {{ form.appointment_date(class="form-control form-control-lg" + (" is-invalid" if form.appointment_date.errors else ""),
+                 id="appointmentDate") }}
+              {% for e in form.appointment_date.errors %}
+                <div class="invalid-feedback">{{ e }}</div>
+              {% endfor %}
+            </div>
+            <div class="col-md-6">
+              {{ form.appointment_time.label(class="form-label fw-semibold") }}
+              {{ form.appointment_time(class="form-select form-select-lg" + (" is-invalid" if form.appointment_time.errors else "")) }}
+              {% for e in form.appointment_time.errors %}
+                <div class="invalid-feedback">{{ e }}</div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Reason -->
+          <div class="mb-4">
+            {{ form.reason.label(class="form-label fw-semibold") }}
+            {{ form.reason(class="form-control", rows=4, maxlength=500,
+               placeholder="Briefly describe your symptoms or reason for visit…") }}
+            <small class="text-muted">Optional but helps the doctor prepare.</small>
+          </div>
+
+          <div class="d-flex gap-3">
+            {{ form.submit(class="btn btn-primary btn-lg px-5") }}
+            <a href="{{ url_for('appointment.list_appointments') }}"
+               class="btn btn-outline-secondary btn-lg">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Doctor Info Panel -->
+  <div class="col-lg-5">
+    <div class="card" id="doctorInfoCard">
+      <div class="card-header">
+        <i class="bi bi-person-badge me-2 text-primary"></i>Selected Doctor
+      </div>
+      <div class="card-body" id="doctorInfoBody">
+        <div class="empty-state py-3" id="doctorPlaceholder">
+          <i class="bi bi-person-badge" style="font-size:2.5rem;color:var(--text-muted);"></i>
+          <p class="text-muted mt-2 mb-0">Select a doctor to see their details.</p>
+        </div>
+        <div id="doctorDetails" style="display:none;">
+          <div class="d-flex align-items-start gap-3 mb-3">
+            <div class="avatar-lg" id="docAvatar" style="width:56px;height:56px;font-size:1.2rem;flex-shrink:0;"></div>
+            <div>
+              <h6 class="mb-1 fw-bold" id="docName">—</h6>
+              <div class="text-primary small fw-semibold" id="docSpecialty">—</div>
+              <div class="text-muted small" id="docDept">—</div>
+            </div>
+          </div>
+          <ul class="list-unstyled small mb-0">
+            <li class="d-flex justify-content-between py-2 border-bottom">
+              <span class="text-muted">Available Days</span>
+              <span class="fw-semibold text-end" id="docDays">—</span>
+            </li>
+            <li class="d-flex justify-content-between py-2 border-bottom">
+              <span class="text-muted">Working Hours</span>
+              <span class="fw-semibold" id="docHours">—</span>
+            </li>
+            <li class="d-flex justify-content-between py-2">
+              <span class="text-muted">Consultation Fee</span>
+              <span class="fw-bold text-primary" id="docFee">—</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Booking Tips -->
+    <div class="card mt-3">
+      <div class="card-header">
+        <i class="bi bi-lightbulb me-2 text-warning"></i>Tips
+      </div>
+      <div class="card-body small text-muted">
+        <ul class="mb-0 ps-3">
+          <li class="mb-2">Choose a date within the doctor's available days.</li>
+          <li class="mb-2">Arrive 10 minutes early for your appointment.</li>
+          <li class="mb-2">Bring any relevant medical records or test results.</li>
+          <li>You can cancel up to 24 hours before the appointment.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Build doctor data map from server-side template
+const doctorData = {
+  {% for d in available_doctors %}
+  {{ d.id }}: {
+    name:      "Dr. {{ d.user.full_name }}",
+    initials:  "{{ d.user.first_name[0] }}{{ d.user.last_name[0] }}",
+    specialty: "{{ d.specialty }}",
+    dept:      "{{ d.department.name }}",
+    days:      "{{ d.available_days or 'Mon–Fri' }}",
+    hours:     "{{ d.available_from }} – {{ d.available_to }}",
+    fee:       "${{ '%.0f'|format(d.consultation_fee) }}",
+  },
+  {% endfor %}
+};
+
+function updateDoctorPanel(id) {
+  const info = doctorData[id];
+  const details   = document.getElementById("doctorDetails");
+  const placeholder = document.getElementById("doctorPlaceholder");
+
+  if (!info) {
+    details.style.display = "none";
+    placeholder.style.display = "";
+    return;
+  }
+
+  document.getElementById("docAvatar").textContent  = info.initials;
+  document.getElementById("docName").textContent    = info.name;
+  document.getElementById("docSpecialty").textContent = info.specialty;
+  document.getElementById("docDept").textContent    = "🏥 " + info.dept;
+  document.getElementById("docDays").textContent    = info.days;
+  document.getElementById("docHours").textContent   = info.hours;
+  document.getElementById("docFee").textContent     = info.fee;
+
+  details.style.display = "";
+  placeholder.style.display = "none";
+}
+
+document.getElementById("doctorSelect").addEventListener("change", function () {
+  updateDoctorPanel(parseInt(this.value));
+});
+
+// Trigger on page load if a doctor is pre-selected
+const initialVal = parseInt(document.getElementById("doctorSelect").value);
+if (initialVal) updateDoctorPanel(initialVal);
+</script>
+{% endblock %}

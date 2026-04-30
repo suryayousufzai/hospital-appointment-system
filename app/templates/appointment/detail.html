@@ -1,0 +1,222 @@
+{% extends "base.html" %}
+{% block title %}Appointment #{{ appt.id }} — MediCare{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2><i class="bi bi-calendar-event me-2 text-primary"></i>Appointment #{{ appt.id }}</h2>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{{ url_for('appointment.list_appointments') }}">Appointments</a>
+        </li>
+        <li class="breadcrumb-item active">#{{ appt.id }}</li>
+      </ol>
+    </nav>
+  </div>
+  <span class="badge status-{{ appt.status }} px-3 py-2" style="font-size:.9rem;">
+    <i class="bi bi-circle-fill me-1" style="font-size:.5rem;vertical-align:middle;"></i>
+    {{ appt.status | capitalize }}
+  </span>
+</div>
+
+<div class="row g-4">
+
+  <!-- Left: Core Details -->
+  <div class="col-lg-7">
+
+    <!-- Summary Card -->
+    <div class="card mb-4">
+      <div class="card-header"><i class="bi bi-info-circle me-2"></i>Summary</div>
+      <div class="card-body">
+        <div class="row g-3">
+
+          <!-- Patient -->
+          <div class="col-sm-6">
+            <div class="p-3 rounded-3" style="background:var(--primary-light);">
+              <div class="text-muted small fw-semibold text-uppercase mb-2">
+                <i class="bi bi-person me-1"></i>Patient
+              </div>
+              <div class="fw-bold">{{ appt.patient.user.full_name }}</div>
+              <div class="text-muted small">{{ appt.patient.user.email }}</div>
+              {% if appt.patient.blood_type %}
+              <span class="badge bg-danger mt-1">{{ appt.patient.blood_type }}</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Doctor -->
+          <div class="col-sm-6">
+            <div class="p-3 rounded-3" style="background:var(--primary-light);">
+              <div class="text-muted small fw-semibold text-uppercase mb-2">
+                <i class="bi bi-person-badge me-1"></i>Doctor
+              </div>
+              <div class="fw-bold">Dr. {{ appt.doctor.user.full_name }}</div>
+              <div class="text-muted small">{{ appt.doctor.specialty }}</div>
+              <div class="text-muted small">{{ appt.doctor.department.name }}</div>
+            </div>
+          </div>
+
+          <!-- Date / Time -->
+          <div class="col-sm-6">
+            <div class="p-3 rounded-3 border">
+              <div class="text-muted small fw-semibold text-uppercase mb-1">
+                <i class="bi bi-calendar3 me-1"></i>Date
+              </div>
+              <div class="fw-bold fs-5">
+                {{ appt.appointment_date.strftime('%A, %B %d, %Y') }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Time -->
+          <div class="col-sm-6">
+            <div class="p-3 rounded-3 border">
+              <div class="text-muted small fw-semibold text-uppercase mb-1">
+                <i class="bi bi-clock me-1"></i>Time
+              </div>
+              <div class="fw-bold fs-5">{{ appt.appointment_time }}</div>
+              <div class="text-muted small">
+                Fee: <span class="text-primary fw-semibold">
+                  ${{ "%.2f"|format(appt.doctor.consultation_fee) }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Reason -->
+        {% if appt.reason %}
+        <div class="mt-3 p-3 rounded-3" style="background:#f8f9fa;">
+          <div class="text-muted small fw-semibold text-uppercase mb-1">
+            <i class="bi bi-chat-text me-1"></i>Reason for Visit
+          </div>
+          <p class="mb-0">{{ appt.reason }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Doctor's Notes -->
+        {% if appt.notes %}
+        <div class="mt-3 p-3 rounded-3" style="background:#f0fdf4;border-left:4px solid var(--success);">
+          <div class="text-muted small fw-semibold text-uppercase mb-1">
+            <i class="bi bi-file-medical me-1"></i>Doctor's Notes
+          </div>
+          <p class="mb-0" style="white-space:pre-wrap;">{{ appt.notes }}</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="card">
+      <div class="card-header"><i class="bi bi-clock-history me-2"></i>Timeline</div>
+      <div class="card-body">
+        <div class="timeline">
+          <div class="timeline-item">
+            <strong>Appointment Booked</strong>
+            <div class="text-muted small">{{ appt.created_at.strftime('%B %d, %Y at %H:%M') }}</div>
+          </div>
+          {% if appt.status in ['confirmed','completed','cancelled'] %}
+          <div class="timeline-item">
+            <strong>Status Updated →
+              <span class="badge status-{{ appt.status }}">{{ appt.status|capitalize }}</span>
+            </strong>
+            <div class="text-muted small">{{ appt.updated_at.strftime('%B %d, %Y at %H:%M') }}</div>
+          </div>
+          {% endif %}
+          {% if appt.status == 'completed' and appt.notes %}
+          <div class="timeline-item">
+            <strong>Doctor's Notes Added</strong>
+            <div class="text-muted small">Visit completed.</div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right: Actions -->
+  <div class="col-lg-5">
+
+    <!-- Update Status (Admin / Doctor only) -->
+    {% if current_user.is_admin() or current_user.is_doctor() %}
+    <div class="card mb-4">
+      <div class="card-header">
+        <i class="bi bi-pencil-square me-2 text-primary"></i>Update Appointment
+      </div>
+      <div class="card-body">
+        <form method="POST"
+              action="{{ url_for('appointment.update_appointment', appointment_id=appt.id) }}"
+              novalidate>
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            {{ form.status.label(class="form-label fw-semibold") }}
+            {{ form.status(class="form-select") }}
+          </div>
+          <div class="mb-3">
+            {{ form.notes.label(class="form-label fw-semibold") }}
+            {{ form.notes(class="form-control", rows=4, maxlength=1000,
+               placeholder="Add clinical notes, diagnosis, follow-up instructions…") }}
+          </div>
+          {{ form.submit(class="btn btn-primary w-100") }}
+        </form>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Cancel Button -->
+    {% if appt.status not in ['completed','cancelled'] %}
+    <div class="card border-danger">
+      <div class="card-header text-danger">
+        <i class="bi bi-exclamation-triangle me-2"></i>Danger Zone
+      </div>
+      <div class="card-body">
+        <p class="text-muted small mb-3">
+          Cancelling an appointment cannot be undone.
+          The slot will become available for other patients.
+        </p>
+        <form method="POST"
+              action="{{ url_for('appointment.cancel_appointment', appointment_id=appt.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit"
+                  class="btn btn-outline-danger w-100"
+                  data-confirm="Are you sure you want to cancel this appointment?">
+            <i class="bi bi-x-circle me-2"></i>Cancel Appointment
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Meta Info -->
+    <div class="card mt-3">
+      <div class="card-header"><i class="bi bi-info-circle me-2"></i>Info</div>
+      <div class="card-body small">
+        <ul class="list-unstyled mb-0">
+          <li class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted">Created</span>
+            <span>{{ appt.created_at.strftime('%b %d, %Y') }}</span>
+          </li>
+          <li class="d-flex justify-content-between py-1 border-bottom">
+            <span class="text-muted">Last Updated</span>
+            <span>{{ appt.updated_at.strftime('%b %d, %Y') }}</span>
+          </li>
+          <li class="d-flex justify-content-between py-1">
+            <span class="text-muted">Upcoming?</span>
+            <span>
+              {% if appt.is_upcoming %}
+              <span class="text-success fw-semibold"><i class="bi bi-check-circle me-1"></i>Yes</span>
+              {% else %}
+              <span class="text-muted">Past</span>
+              {% endif %}
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

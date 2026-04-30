@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Edit User — MediCare{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2><i class="bi bi-pencil-square me-2 text-primary"></i>Edit User</h2>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_users') }}">Users</a></li>
+        <li class="breadcrumb-item active">Edit</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<div class="card" style="max-width:480px; margin:0 auto;">
+  <div class="card-header">
+    <i class="bi bi-person me-2"></i>{{ user.full_name }}
+    <span class="badge ms-2 {% if user.role == 'admin' %}bg-danger{% elif user.role == 'doctor' %}bg-primary{% else %}bg-success{% endif %}">
+      {{ user.role }}
+    </span>
+  </div>
+  <div class="card-body">
+    <form method="POST" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="mb-3">
+        {{ form.first_name.label(class="form-label") }}
+        {{ form.first_name(class="form-control") }}
+      </div>
+      <div class="mb-3">
+        {{ form.last_name.label(class="form-label") }}
+        {{ form.last_name(class="form-control") }}
+      </div>
+      <div class="mb-4 form-check form-switch">
+        {{ form.is_active(class="form-check-input") }}
+        {{ form.is_active.label(class="form-check-label") }}
+      </div>
+      <div class="d-flex gap-2">
+        {{ form.submit(class="btn btn-primary") }}
+        <a href="{{ url_for('admin.manage_users') }}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

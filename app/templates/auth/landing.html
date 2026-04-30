@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Welcome — MediCare Hospital{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper" style="background: linear-gradient(135deg, #134f67 0%, #1a6b8a 50%, #00b4d8 100%);">
+  <div class="text-center text-white" style="max-width: 600px; width:100%; padding: 2rem;">
+
+    <!-- Logo -->
+    <div class="auth-logo mb-4" style="margin: 0 auto 1.5rem;">
+      <i class="bi bi-hospital-fill"></i>
+    </div>
+
+    <h1 class="display-5 fw-bold mb-2" style="font-family:'DM Serif Display',serif; color:#fff;">
+      MediCare Hospital
+    </h1>
+    <p class="lead mb-5" style="opacity:.85;">
+      Your health is our priority. Book appointments, manage care, and stay connected with your medical team.
+    </p>
+
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="{{ url_for('auth.login') }}" class="btn btn-light btn-lg px-4 fw-semibold" style="color: var(--primary); border-radius:12px;">
+        <i class="bi bi-box-arrow-in-right me-2"></i>Login
+      </a>
+      <a href="{{ url_for('auth.register') }}" class="btn btn-outline-light btn-lg px-4 fw-semibold" style="border-radius:12px;">
+        <i class="bi bi-person-plus me-2"></i>Register as Patient
+      </a>
+    </div>
+
+    <!-- Feature highlights -->
+    <div class="row mt-5 g-3 text-start">
+      <div class="col-md-4">
+        <div style="background:rgba(255,255,255,.1); border-radius:14px; padding:1.2rem;">
+          <i class="bi bi-calendar-check fs-4 mb-2 d-block"></i>
+          <strong>Easy Booking</strong>
+          <p class="small mb-0" style="opacity:.8;">Schedule appointments in seconds</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div style="background:rgba(255,255,255,.1); border-radius:14px; padding:1.2rem;">
+          <i class="bi bi-person-badge fs-4 mb-2 d-block"></i>
+          <strong>Expert Doctors</strong>
+          <p class="small mb-0" style="opacity:.8;">Browse specialists by department</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div style="background:rgba(255,255,255,.1); border-radius:14px; padding:1.2rem;">
+          <i class="bi bi-clock-history fs-4 mb-2 d-block"></i>
+          <strong>History Tracking</strong>
+          <p class="small mb-0" style="opacity:.8;">View all past appointments</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

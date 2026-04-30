@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Add Doctor — MediCare{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2><i class="bi bi-person-plus me-2 text-primary"></i>Add New Doctor</h2>
+    <nav aria-label="breadcrumb"><ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+      <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_users') }}">Users</a></li>
+      <li class="breadcrumb-item active">Add Doctor</li>
+    </ol></nav>
+  </div>
+</div>
+
+<form method="POST" action="{{ url_for('admin.add_doctor') }}">
+  {{ form.hidden_tag() }}
+  <div class="row g-4">
+
+    <!-- Account Info -->
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header"><i class="bi bi-person-circle me-2"></i>Account Information</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="form-label">First Name</label>
+              {{ form.first_name(class="form-control", placeholder="John") }}
+            </div>
+            <div class="col-6">
+              <label class="form-label">Last Name</label>
+              {{ form.last_name(class="form-control", placeholder="Smith") }}
+            </div>
+            <div class="col-12">
+              <label class="form-label">Username</label>
+              {{ form.username(class="form-control", placeholder="dr.smith") }}
+            </div>
+            <div class="col-12">
+              <label class="form-label">Email Address</label>
+              {{ form.email(class="form-control", placeholder="dr.smith@hospital.com") }}
+            </div>
+            <div class="col-12">
+              <label class="form-label">Password</label>
+              {{ form.password(class="form-control", placeholder="Min. 8 characters") }}
+            </div>
+            <div class="col-12">
+              <label class="form-label">Confirm Password</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Doctor Profile -->
+    <div class="col-lg-6">
+      <div class="card h-100">
+        <div class="card-header"><i class="bi bi-clipboard2-pulse me-2"></i>Doctor Profile</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Department</label>
+              {{ form.department_id(class="form-select") }}
+            </div>
+            <div class="col-12">
+              <label class="form-label">Specialty</label>
+              {{ form.specialty(class="form-control", placeholder="e.g. Cardiologist") }}
+            </div>
+            <div class="col-6">
+              <label class="form-label">Phone</label>
+              {{ form.phone(class="form-control", placeholder="+1 555 000 0000") }}
+            </div>
+            <div class="col-6">
+              <label class="form-label">Consultation Fee ($)</label>
+              {{ form.consultation_fee(class="form-control", placeholder="0.00") }}
+            </div>
+            <div class="col-6">
+              <label class="form-label">Available From</label>
+              {{ form.available_from(class="form-select") }}
+            </div>
+            <div class="col-6">
+              <label class="form-label">Available To</label>
+              {{ form.available_to(class="form-select") }}
+            </div>
+            <div class="col-12">
+              <label class="form-label">Available Days</label>
+              {{ form.available_days(class="form-control", placeholder="Monday,Wednesday,Friday") }}
+              <small class="text-muted">Comma-separated day names (e.g. Monday,Tuesday)</small>
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Biography</label>
+              {{ form.bio(class="form-control", rows=3, placeholder="Short professional bio…") }}
+            </div>
+            <div class="col-12">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 d-flex justify-content-end gap-2">
+      <a href="{{ url_for('doctor.list_doctors') }}" class="btn btn-outline-secondary">Cancel</a>
+      {{ form.submit(class="btn btn-primary px-4") }}
+    </div>
+  </div>
+</form>
+{% endblock %}

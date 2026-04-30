@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Doctor Dashboard — MediCare{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div>
+    <h2><i class="bi bi-speedometer2 me-2 text-primary"></i>Doctor Dashboard</h2>
+    <p class="text-muted mb-0">Welcome, Dr. {{ current_user.first_name }}!</p>
+  </div>
+  <a href="{{ url_for('doctor.edit_doctor', doctor_id=doctor.id) }}" class="btn btn-outline-primary btn-sm">
+    <i class="bi bi-pencil me-1"></i>Edit Profile
+  </a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-sm-4">
+    <div class="stat-card orange">
+      <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
+      <div><div class="stat-label">Pending</div><div class="stat-value">{{ pending|length }}</div></div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="stat-card blue">
+      <div class="stat-icon"><i class="bi bi-calendar-check"></i></div>
+      <div><div class="stat-label">Confirmed</div><div class="stat-value">{{ confirmed|length }}</div></div>
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="stat-card green">
+      <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+      <div><div class="stat-label">Completed</div><div class="stat-value">{{ history|selectattr('status','eq','completed')|list|length }}</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header"><i class="bi bi-hourglass-split me-2 text-warning"></i>Pending Appointments</div>
+      <div class="card-body p-0">
+        {% if pending %}
+        <div class="table-responsive"><table class="table table-hover mb-0">
+          <thead><tr><th>Patient</th><th>Date</th><th>Time</th><th>Action</th></tr></thead>
+          <tbody>
+            {% for appt in pending %}
+            <tr>
+              <td>{{ appt.patient.user.full_name }}</td>
+              <td>{{ appt.appointment_date }}</td>
+              <td>{{ appt.appointment_time }}</td>
+              <td><a href="{{ url_for('appointment.view_appointment', appointment_id=appt.id) }}" class="btn btn-sm btn-outline-primary">View</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table></div>
+        {% else %}
+        <div class="empty-state py-3"><i class="bi bi-check-all"></i><p>No pending appointments.</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div class="card-header"><i class="bi bi-calendar-check me-2 text-primary"></i>Confirmed Appointments</div>
+      <div class="card-body p-0">
+        {% if confirmed %}
+        <div class="table-responsive"><table class="table table-hover mb-0">
+          <thead><tr><th>Patient</th><th>Date</th><th>Time</th><th>Reason</th></tr></thead>
+          <tbody>
+            {% for appt in confirmed %}
+            <tr>
+              <td>{{ appt.patient.user.full_name }}</td>
+              <td>{{ appt.appointment_date }}</td>
+              <td>{{ appt.appointment_time }}</td>
+              <td class="text-muted small">{{ appt.reason[:30] ~ '…' if appt.reason and appt.reason|length > 30 else (appt.reason or '—') }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table></div>
+        {% else %}
+        <div class="empty-state py-3"><p class="mb-0">No confirmed appointments.</p></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
