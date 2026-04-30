@@ -1,10 +1,10 @@
-# 🏥 Hospital Appointment Management System
+# Hospital Appointment Management System
 
 A full-featured web application built with **Flask** that allows patients, doctors, and administrators to manage hospital appointments efficiently.
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Features](#features)
 - [Tech Stack](#tech-stack)
@@ -17,39 +17,39 @@ A full-featured web application built with **Flask** that allows patients, docto
 
 ---
 
-## ✨ Features
+## Features
 
-### 👤 Authentication & Authorization
+### Authentication & Authorization
 - Secure login and registration system
 - Role-based access control: **Admin**, **Doctor**, **Patient**
 - Password hashing with Bcrypt
 - Session management with Flask-Login
 
-### 🩺 Doctor Management
+### Doctor Management
 - Add, edit, and deactivate doctor profiles
 - Assign doctors to departments
 - Manage availability schedules (days and hours)
 - Search doctors by name, specialty, or department
 
-### 🧑‍⚕️ Patient Management
+### Patient Management
 - Patient self-registration
 - Admin can view and manage all patient accounts
 - Store medical history, blood type, emergency contacts
 
-### 📅 Appointment System
+### Appointment System
 - Patients can book appointments with available doctors
 - Real-time availability checking
 - Appointment statuses: `pending → confirmed → completed / cancelled`
 - View full appointment history (patient and doctor views)
 - Doctors can add notes after a visit
 
-### 🏢 Department Management
+### Department Management
 - Admin can create and manage hospital departments
 - Doctors are assigned to departments
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Layer       | Technology                         |
 |-------------|-------------------------------------|
@@ -62,7 +62,7 @@ A full-featured web application built with **Flask** that allows patients, docto
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 hospital_system/
@@ -93,7 +93,7 @@ hospital_system/
 
 ---
 
-## 🗃 Database Schema
+## Database Schema
 
 ```
 users
@@ -119,7 +119,7 @@ appointments
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Auth
 | Method | Endpoint       | Description              | Access  |
@@ -162,7 +162,7 @@ appointments
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Python 3.11 or newer
@@ -209,11 +209,11 @@ Email    : admin@hospital.com
 Password : Admin@1234
 ```
 
-> ⚠️ Change the admin password after your first login.
+> Change the admin password after your first login.
 
 ---
 
-## 🧪 Running Tests
+## Running Tests
 
 ```bash
 # Run all tests
@@ -228,18 +228,18 @@ pytest tests/test_auth.py
 
 ---
 
-## 👥 Team Members
+##  Team Members
 
 | Name | Role |
 |------|------|
-| Member 1 | Auth & User Management |
-| Member 2 | Doctor & Department Module |
-| Member 3 | Patient Module |
-| Member 4 | Appointment Module |
-| Member 5 | UI/UX & Testing |
+| Surya Yousufzai | Auth & User Management |
+| Alia Noori | Doctor & Department Module |
+| Faezah Ahmadi | Patient Module |
+| Lima Wahedi  | Appointment Module |
+| Raufa Rauf | UI/UX & Testing |
 
 ---
 
-## 📄 License
+## License
 
-This project was created for academic purposes as part of a Flask web development course.
+This project was created for academic purposes as part of a Flask Python course.
