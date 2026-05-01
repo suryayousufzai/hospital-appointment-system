@@ -209,7 +209,7 @@ Email    : admin@hospital.com
 Password : Admin@1234
 ```
 
-> Change the admin password after your first login.
+
 
 ---
 
